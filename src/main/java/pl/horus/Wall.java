@@ -18,13 +18,14 @@ public class Wall implements Structure {
 
     private Optional<Block> getBlock(String color, List<Block> blocks) {
         for (Block block : blocks) {
-            if (block.getColor().equals(color)) {
-                return Optional.of(block);
-            }
             if (block instanceof CompositeBlock) {
                 Optional<Block> nestedBlock = findNestedBlockByColor((CompositeBlock) block, color);
                 if (nestedBlock.isPresent()) {
                     return nestedBlock;
+                }
+            } else {
+                if (block.getColor().equals(color)) {
+                    return Optional.of(block);
                 }
             }
         }
@@ -44,13 +45,15 @@ public class Wall implements Structure {
     private List<Block> getBlocks(String material, List<Block> blocks) {
         List<Block> foundBlocks = new ArrayList<>();
         for (Block block : blocks) {
-            if (block.getMaterial().equals(material)) {
-                foundBlocks.add(block);
-            }
+
             if (block instanceof CompositeBlock) {
                 List<Block> nestedBlocks = findNestedBlocksByMaterial((CompositeBlock) block, material);
                 if (nestedBlocks.size() > 0) {
                     foundBlocks.addAll(nestedBlocks);
+                }
+            } else {
+                if (block.getMaterial().equals(material)) {
+                    foundBlocks.add(block);
                 }
             }
         }
@@ -78,8 +81,8 @@ public class Wall implements Structure {
             for (Block nestedBlock : blocks) {
                 sumOfBlocks += countNestedBlocks(nestedBlock);
             }
-        }else{
-            sumOfBlocks +=1;
+        } else {
+            sumOfBlocks += 1;
         }
         return sumOfBlocks;
     }
